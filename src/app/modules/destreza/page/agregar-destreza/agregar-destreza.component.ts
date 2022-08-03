@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Asignatura, DestrezaElement, Objective } from '../../interfaces/destreza.interface';
+import { Asignatura, DestrezaElement, Objective, Criteria } from '../../interfaces/destreza.interface';
 import { DestrezaService } from '../../service/destreza.service';
 
 import Swal from 'sweetalert2';
@@ -18,7 +18,9 @@ export class AgregarDestrezaComponent implements OnInit {
 
   asignatura!: Asignatura
   objectives: Objective[] = []
+  criterios: Criteria[] = []
   destrezas: DestrezaElement[] = []
+
 
   idAsignatura!: number
   nombreAsignatura: string = ''
@@ -69,6 +71,7 @@ export class AgregarDestrezaComponent implements OnInit {
     }
   }
 
+
   addDestreza() {
     let repetido: boolean = false
     if (!this.valorActual || this.valorActual.trim().length === 0) {
@@ -96,6 +99,33 @@ export class AgregarDestrezaComponent implements OnInit {
 
   }
 
+  addCriterio() {
+    let repetido: boolean = false
+    if (!this.valorActual || this.valorActual.trim().length === 0) {
+      this.messageError = 'el criterio no puede quedar vacia'
+      this.typeAlert = 'danger'
+      this.showAlert(true)
+      return
+    }
+    this.criterios.forEach(criterio => {
+      if (criterio.nameCriteria === this.valorActual.trim().toLowerCase()) {
+        repetido = true
+        this.messageError = 'El criterio ya existe!!'
+        this.typeAlert = 'danger'
+        this.showAlert(true)
+      }
+    })
+    if (!repetido) {
+      let criteriosCopy = [...this.criterios]
+      this.criterios = [...criteriosCopy, { nameCriteria: this.valorActual.trim().toLowerCase() }]
+      this.valorActual = ''
+      this.messageError = 'Criterio agregada!'
+      this.typeAlert = 'success'
+      this.showAlert(true)
+    }
+
+  }
+
   deleteObjective(name: string) {
     this.messageError = 'Objetivo eliminado!'
     this.typeAlert = 'success'
@@ -113,18 +143,26 @@ export class AgregarDestrezaComponent implements OnInit {
       return destreza.nameDestreza !== name.toLowerCase()
     })
   }
+  deleteCriterio(name: string) {
+    this.messageError = 'Criteria eliminada!!'
+    this.typeAlert = 'success'
+    this.showAlert(true)
+    this.criterios = this.criterios.filter(criterio => {
+      return criterio.nameCriteria !== name.toLowerCase()
+    })
+  }
 
   addAsignatura() {
-    if (this.destrezas.length === 0 && this.objectives.length === 0) {
-      this.messageError = `Tiene que añadir alguna destreza u objetivo a la asignatura ${this.nombreAsignatura}`
+    if (this.destrezas.length === 0 || this.objectives.length === 0 || this.criterios.length === 0 ) {
+      this.messageError = `Tiene que añadir alguna destreza,objetivo y criterio a la asignatura ${this.nombreAsignatura}`
       this.typeAlert = 'danger'
       this.showAlert(true)
       return
     }
 
     Swal.fire({
-      title: '¿Guardar destrezas y objetivos?',
-      text: `Se guardarán las destrezas y objetivos agregados a la asignatura ${this.nombreAsignatura}`,
+      title: '¿Guardar destrezas, objetivos y criterios?',
+      text: `Se guardarán las destrezas, objetivos y criterios agregados a la asignatura ${this.nombreAsignatura}`,
       icon: 'info',
       showDenyButton: true,
       confirmButtonText: 'Guardar',
@@ -158,10 +196,32 @@ export class AgregarDestrezaComponent implements OnInit {
               }
             })
         }
+        if (this.criterios.length > 0) {
+          this.destrezaService.addCriterio(this.idAsignatura, this.criterios)
+            .subscribe({
+              next: (resp) => { },
+              error: ({ error }) => {
+                Swal.fire('Hubo un error al guardar los criterios', '', 'error')
+              },
+              complete: () => {
+                Swal.fire(`Criterios agregados a la asignatura ${this.nombreAsignatura}`, '', 'success')
+                this.router.navigateByUrl('/dashboard/asignatura')
+              }
+            })
+        }
 
       }
     })
 
+  }
+  toggleObjDezCri() {
+    if (this.seleccionado === "destreza") {
+      this.addDestreza();
+    } else if (this.seleccionado === "objetivo") {
+      this.addObjective();
+    } else if (this.seleccionado === "criterio") {
+      this.addCriterio();
+    }
   }
 
 }

@@ -23,8 +23,8 @@ export interface DocumentBodyCreate {
   methodology: string;
   resourse: string;
   resultFinal: string;
-  StudentId: number;
-  InstitutionId: number;
+  studentId: number;
+  institutionId: number;
   courses: number[];
   teachers: number[];
 }
