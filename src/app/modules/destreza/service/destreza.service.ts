@@ -4,8 +4,8 @@ import { Observable } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
 
-import { Asignatura, Objective as obj, DestrezaElement } from '../interfaces/destreza.interface';
-import { AsignaturaList, Destreza, Objective } from '../interfaces/asignatura.interface';
+import { Asignatura, Objective as obj, Criteria as cri, DestrezaElement } from '../interfaces/destreza.interface';
+import { AsignaturaList, Destreza, Objective, Criteria } from '../interfaces/asignatura.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -46,6 +46,17 @@ export class DestrezaService {
     return this.http.put<Objective>(`${baseURL}/course/objective/${id}`, body, { headers })
   }
 
+  updateCriterio(id: number, criterio: cri): Observable<Criteria> {
+    const token: string = localStorage.getItem('token') || ''
+    const baseURL = environment.baseURL
+    const body = criterio
+    const headers = new HttpHeaders()
+      .set('Content-Type', 'application/json')
+      .set('authorization', `bearer ${token}`)
+
+    return this.http.put<Criteria>(`${baseURL}/course/criterio/${id}`, body, { headers })
+  }
+
   updateDestreza(id: number, destreza: DestrezaElement): Observable<Destreza> {
     const token: string = localStorage.getItem('token') || ''
     const baseURL = environment.baseURL
@@ -79,6 +90,17 @@ export class DestrezaService {
     return this.http.post<Objective>(`${baseURL}/course/${id}/objective`, body, { headers })
   }
 
+  addCriterio(id: number, criterios: cri[]): Observable<Criteria> {
+    const token: string = localStorage.getItem('token') || ''
+    const baseURL = environment.baseURL
+    const body = { criterios }
+    const headers = new HttpHeaders()
+      .set('Content-Type', 'application/json')
+      .set('authorization', `bearer ${token}`)
+
+    return this.http.post<Criteria>(`${baseURL}/course/${id}/criterio`, body, { headers })
+  }
+
   deleteObjective(id: number): Observable<Objective> {
     const token: string = localStorage.getItem('token') || ''
     const baseURL = environment.baseURL
@@ -87,6 +109,16 @@ export class DestrezaService {
       .set('authorization', `bearer ${token}`)
 
     return this.http.delete<Objective>(`${baseURL}/course/objective/${id}`, { headers })
+  }
+
+  deleteCriterio(id: number): Observable<Criteria> {
+    const token: string = localStorage.getItem('token') || ''
+    const baseURL = environment.baseURL
+    const headers = new HttpHeaders()
+      .set('Content-Type', 'application/json')
+      .set('authorization', `bearer ${token}`)
+
+    return this.http.delete<Criteria>(`${baseURL}/course/criterio/${id}`, { headers })
   }
 
   deleteDestreza(id: number): Observable<Destreza> {

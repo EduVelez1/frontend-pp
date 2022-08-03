@@ -12,9 +12,6 @@ import Swal from 'sweetalert2';
 })
 export class AgregarEstudianteComponent implements OnInit {
 
-  otraProvincia = false;
-  otraCiudad = false;
-
   estudianteFrom: FormGroup = this.fb.group({
     nombre: ['', Validators.required],
     apellido: ['', Validators.required],
@@ -35,31 +32,10 @@ export class AgregarEstudianteComponent implements OnInit {
     añolectivo: ['', Validators.required],
 
   })
-  
 
   constructor(private estudianteService: EstudianteService, private fb: FormBuilder) { }
 
   ngOnInit(): void {
-  }
-
-  otraProvinciaFunc() {
-    if (this.estudianteFrom.value.Provincia == '') {
-
-      this.otraProvincia = true;
-      this.estudianteFrom.value.Provincia = ''
-    } else {
-      this.otraProvincia = false
-    }
-  }
-  otraCiudadFunc() {
-    if (this.estudianteFrom.value.ciudad == '') {
-
-      this.otraCiudad = true;
-      this.estudianteFrom.value.ciudad = ''
-    } else {
-      this.otraCiudad = false;
-
-    }
   }
 
   validCampo(campo: string) {
@@ -138,8 +114,6 @@ export class AgregarEstudianteComponent implements OnInit {
         complete: () => {
           Swal.fire('Estudiante Guardado', '', 'success')
           this.estudianteFrom.reset()
-          this.otraProvincia = false;
-
         }
       })
   }

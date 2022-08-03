@@ -32,8 +32,8 @@ export class ResultadosFinalesComponent implements OnInit {
     spinner?.classList.remove('d-none')
     if (this.registerDocumentCurricular.validateResultFinal()) {
       const doc: DocumentBodyCreate = {
-        StudentId: this.registerDocumentCurricular.docCurricularForm.value.idStudent,
-        InstitutionId: this.registerDocumentCurricular.docCurricularForm.value.idInstitution,
+        studentId: this.registerDocumentCurricular.docCurricularForm.value.idStudent,
+        institutionId: this.registerDocumentCurricular.docCurricularForm.value.idInstitution,
         duration: this.registerDocumentCurricular.docCurricularForm.value.duration,
         infoPedagogica: this.registerDocumentCurricular.docCurricularForm.value.infPhicopedagogico,
         developData: this.registerDocumentCurricular.docCurricularForm.value.dateDevelopment,
@@ -54,18 +54,7 @@ export class ResultadosFinalesComponent implements OnInit {
         teachers: this.registerDocumentCurricular.docentesSeleccionados,
       }
 
-    //  console.log('doc ->', doc);
-
-    // this.registerDocumentCurricular.addDocumento(doc).subscribe(
-    //   resp => {
-    //     console.log(resp)
-    //   },
-    //   err => {
-    //     console.log(err)
-    //     Swal.fire('Error al realizar el registro del documento', '', 'error')
-
-    //   }
-    // )
+      //console.log('doc ->', doc);
 
       this.registerDocumentCurricular.addDocumento(doc)
         .subscribe({
@@ -77,7 +66,7 @@ export class ResultadosFinalesComponent implements OnInit {
             spinner?.classList.add('d-none')
             Swal.fire('Documento curricular Guardado con exito', '', 'success')
             setTimeout(() => {
-           //   this.router.navigateByUrl('/dashboard/adaptacion-curricular/lista')
+              this.router.navigateByUrl('/dashboard/adaptacion-curricular/lista')
             }, 2000)
           }
         })
